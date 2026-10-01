@@ -12,17 +12,5 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Install dependencies
-        run: npm install
-
       - name: Run Test1
-        run: |
-          output=$(node dist/Test1.js)
-          # Capture the exit code of the previous command
-          exit_code=$output
-
-          # Check the exit code to determine if there was an error
-          if [ $exit_code -ne 0 ]; then
-            echo "Error: The Node.js script failed with exit code $exit_code"
-            exit 1  # Exit the workflow with an error code
-          fi
+        run: node dist/Test1.js
