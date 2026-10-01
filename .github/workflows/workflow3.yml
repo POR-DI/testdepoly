@@ -1,5 +1,9 @@
 name: Workflow 3
-on: [push]
+on:
+  workflow_run:
+    workflows: ["Workflow 2"]
+    types:
+      - completed
 jobs:
   job1:
     runs-on: ubuntu-latest
