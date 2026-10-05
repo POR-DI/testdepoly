@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ทดสอบ User</title>
+  <style>
+    button {
+      -webkit-appearance: none;
+      appearance: none;
+      background: #efefef;
+      color: #000;
+      border: 1px solid #767676;
+      border-radius: 2px;
+      padding: 2px 6px;
+    }
+    button:active { background: #ddd; }
+  </style>
+</head>
+<body>
+  <h2>ทดสอบ User</h2>
+  <form id="form">
+    <p><label for="name">ชื่อ:</label> <input id="name" autocomplete="name"></p>
+    <p><label for="email">อีเมล:</label> <input id="email" type="email" autocomplete="email"></p>
+    <p><label for="password">รหัสผ่าน:</label> <input id="password" type="password" autocomplete="new-password"></p>
+    <button type="submit">เพิ่มผู้ใช้</button>
+    <button type="button" id="list">ดูทั้งหมด</button>
+    <hr>
+    <p><label for="userId">User ID:</label> <input id="userId" size="28"></p>
+    <button type="button" id="get">ดูตาม ID</button>
+    <button type="button" id="update">แก้ไข</button>
+    <button type="button" id="remove">ลบ</button>
+    <p>ถ้าจะแก้ไข ให้ใส่ ID แล้วกรอกข้อมูลใหม่ในช่องด้านบน</p>
+  </form>
+  <hr>
+  <h3>ผลลัพธ์</h3>
+  <pre id="result" aria-live="polite" style="white-space: pre-wrap; overflow-wrap: anywhere;">ยังไม่มีข้อมูล</pre>
+<script>
+const el = id => document.getElementById(id);
+async function call(method, byId = false, body) {
+ const id = el('userId').value.trim();
+ if (byId && !id) { el('result').textContent = 'กรุณากรอก User ID'; return; }
+ try {
+  const response = await fetch('/api/users' + (byId ? '/' + encodeURIComponent(id) : ''), {method, headers: {'Content-Type':'application/json'}, ...(body ? {body:JSON.stringify(body)} : {})});
+  const data = await response.json();
+  el('result').textContent = 'HTTP ' + response.status + '\n' + JSON.stringify(data, null, 2);
+  if (response.ok && data._id) el('userId').value = data._id;
+  if (response.ok) el('password').value = '';
+ } catch { el('result').textContent = 'เชื่อมต่อ Server ไม่ได้'; }
+}
+function data(partial = false) { return Object.fromEntries(['name','email','password'].map(key => [key, el(key).value]).filter(([,value]) => !partial || value !== '')); }
+el('form').onsubmit = event => { event.preventDefault(); call('POST', false, data()); };
+el('list').onclick = () => call('GET');
+el('get').onclick = () => call('GET', true);
+el('update').onclick = () => call('PUT', true, data(true));
+el('remove').onclick = () => call('DELETE', true);
+</script></body></html>

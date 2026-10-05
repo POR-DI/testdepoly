@@ -1,16 +1,13 @@
 name: main
-on: [push]
+on: [push, pull_request]
 jobs:
   job1:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
-      - name: Run Test1
-        run: node dist/Test1.js
+          cache: npm
+      - run: npm ci
+      - run: npm test
