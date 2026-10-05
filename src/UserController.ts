@@ -3,6 +3,7 @@ import { randomBytes, scrypt } from 'crypto';
 import { promisify } from 'util';
 import mongoose from 'mongoose';
 import User from './User';
+import { Utils } from './Utils';
 
 const scryptAsync = promisify(scrypt);
 async function hashPassword(password: string): Promise<string> {
@@ -39,7 +40,7 @@ async function userData(body: unknown, partial = false): Promise<Record<string, 
     result[field] = field === 'password' ? input[field] : input[field].trim();
   }
   if (!Object.keys(result).length) throw new Error('No user fields supplied');
-  if (result.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(result.email)) throw new Error('Invalid email');
+  if (result.email && !Utils.isValidEmail(result.email)) throw new Error('Invalid email');
   if (result.password) result.password = await hashPassword(result.password);
   return result;
 }

@@ -10,4 +10,5 @@ jobs:
           node-version: '22'
           cache: npm
       - run: npm ci
-      - run: npm test
+      - name: Run Utils and API tests
+        run: npm test

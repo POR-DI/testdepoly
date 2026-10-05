@@ -17,6 +17,7 @@ const crypto_1 = require("crypto");
 const util_1 = require("util");
 const mongoose_1 = __importDefault(require("mongoose"));
 const User_1 = __importDefault(require("./User"));
+const Utils_1 = require("./Utils");
 const scryptAsync = (0, util_1.promisify)(crypto_1.scrypt);
 function hashPassword(password) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -58,7 +59,7 @@ function userData(body_1) {
         }
         if (!Object.keys(result).length)
             throw new Error('No user fields supplied');
-        if (result.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(result.email))
+        if (result.email && !Utils_1.Utils.isValidEmail(result.email))
             throw new Error('Invalid email');
         if (result.password)
             result.password = yield hashPassword(result.password);

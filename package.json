@@ -7,7 +7,8 @@
     "start": "node dist/index.js",
     "dev": "nodemon",
     "build": "tsc && node scripts/copy-public.cjs",
-    "test": "npm run build && node dist/Test1.js && node --test tests/*.test.cjs"
+    "test": "npm run build && tsc -p tsconfig.test.json && node dist/Test1.js && node --require ts-node/register --test tests/*.test.ts",
+    "test:utils": "ts-node src/Test1.ts"
   },
   "keywords": [],
   "author": "",
